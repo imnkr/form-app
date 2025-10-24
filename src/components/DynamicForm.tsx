@@ -94,9 +94,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ config, onSubmit }) => {
     }
 
     if (field.type === 'multiselect') {
-      const select = e.target as HTMLSelectElement;
-      const selected = Array.from(select.selectedOptions).map(o => o.value);
-      setFormData(prev => ({ ...prev, [key]: selected }));
+      const currentValue = formData[key] as string[] || [];
+      const clickedValue = e.target.value;
+      
+      const newSelected = currentValue.includes(clickedValue)
+        ? currentValue.filter(v => v !== clickedValue)
+        : [...currentValue, clickedValue];
+
+      setFormData(prev => ({ ...prev, [key]: newSelected }));
       setErrors(prev => { const c = { ...prev }; delete c[key]; return c; });
       return;
     }
